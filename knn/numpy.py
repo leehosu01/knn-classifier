@@ -17,7 +17,7 @@ def __predict(test_X:np.ndarray, train_X:np.ndarray, train_Y:np.ndarray, knn_k:i
         slices_size = [batchsize] * (test_X.shape[0]//batchsize) 
         if test_X.shape[0]%batchsize != 0:
             slices_size += [test_X.shape[0]%batchsize]
-        splited_tensor = np.split(test_X, slices_size, axis = 0)
+        splited_tensor = np.split(test_X, np.cumsum(slices_size, axis = 0), axis = 0)
 
     for part_of_test_X in splited_tensor:
         similiarity = part_of_test_X @ train_X  #[N, M]
