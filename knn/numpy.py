@@ -21,11 +21,18 @@ def __predict(test_X:np.ndarray, train_X:np.ndarray, train_Y:np.ndarray, knn_k:i
 
     for part_of_test_X in splited_tensor:
         similiarity = part_of_test_X @ train_X  #[N, M]
-        sim_weight = np.exp(similiarity / knn_t) #[N, M]
-        sim_indices = similiarity.argsort(axis = -1)[:, -knn_k:] #[N, K]
-        mask = np.zeros_like(similiarity)
-        np.put_along_axis(mask, sim_indices, 1, axis = -1)
-        pred_score = (sim_weight * mask) @ one_hot_class
+        sim_indices = np.argpartition(similiarity, -knn_k, axis = -1)[:, -knn_k:]  #[N, K]
+        sim_weight = np.take_along_axis(similiarity, sim_indices, axis=-1)
+        sim_weight = np.exp(sim_weight / knn_t) #[N, M]
+        weights = np.zeros_like(similiarity)
+        np.put_along_axis(weights, sim_indices, sim_weight, axis = -1)
+        pred_score = weights @ one_hot_class
+        # sim_weight = np.exp(similiarity / knn_t) #[N, M]
+        # sim_indices = np.argpartition(similiarity, -knn_k, axis = -1)[:, -knn_k:]  #[N, K]
+        # # sim_indices = similiarity.argsort(axis = -1)[:, -knn_k:] #[N, K]
+        # mask = np.zeros_like(similiarity)
+        # np.put_along_axis(mask, sim_indices, 1, axis = -1)
+        # pred_score = (sim_weight * mask) @ one_hot_class
         pred_label.append(pred_score.argmax(axis = -1))
 
     pred_label = np.concatenate(pred_label, axis = 0)
