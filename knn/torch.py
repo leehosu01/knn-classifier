@@ -17,7 +17,7 @@ def __predict(test_X:torch.tensor, train_X:torch.tensor, train_Y:torch.tensor, k
         slices_size = [batchsize] * (test_X.shape[0]//batchsize) 
         if test_X.shape[0]%batchsize != 0:
             slices_size += [test_X.shape[0]%batchsize]
-    splited_tensor = test_X.split(slices_size, dim = 0)
+        splited_tensor = test_X.split(slices_size, dim = 0)
 
     for part_of_test_X in splited_tensor:
         similiarity = part_of_test_X @ train_X  #[N, M]
