@@ -45,6 +45,8 @@ def predict(test_X, train_X, train_Y, knn_k:int = 200, knn_t:float = 0.1, batchs
     if len(test_X.shape) > 2:
         warnings.warn(f"rank(test_X) = {len(test_X.shape)} > 2 . we reshape test_X ", UserWarning)
         test_X = test_X.reshape(test_X.shape[0], -1)
+    if train_Y.dtype != torch.long:
+        train_Y = train_Y.long()
     test_X = torch.nn.functional.normalize(test_X, dim=-1)
     train_X = torch.nn.functional.normalize(train_X, dim=-1)
     train_X = train_X.T
