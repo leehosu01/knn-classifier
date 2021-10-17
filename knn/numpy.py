@@ -8,7 +8,7 @@ def __predict(test_X:np.ndarray, train_X:np.ndarray, train_Y:np.ndarray, knn_k:i
     if train_X.shape[1] <= knn_k:
         warnings.warn(f"samples count = {train_X.shape[0]}, but consider nearest {knn_k} elements.  ", UserWarning)
     
-    pred_scores = []
+    pred_label = []
     one_hot_class = np.eye(train_Y.max() + 1)[train_Y].astype(test_X.dtype) #[M, C]
     
     if test_X.shape[0] <= batchsize:
@@ -26,11 +26,9 @@ def __predict(test_X:np.ndarray, train_X:np.ndarray, train_Y:np.ndarray, knn_k:i
         mask = np.zeros_like(similiarity)
         np.put_along_axis(mask, sim_indices, 1, axis = -1)
         pred_score = (sim_weight * mask) @ one_hot_class
-        pred_scores.append(pred_score)
+        pred_label.append(pred_score.argmax(axis = -1))
 
-    pred_scores = np.concatenate(pred_scores, axis = 0)
-    
-    pred_label = pred_scores.argmax(axis = -1)
+    pred_label = np.concatenate(pred_label, axis = 0)
     return pred_label
 def predict(test_X, train_X, train_Y, knn_k:int = 200, knn_t:float = 0.1, batchsize : int = 512):
     if type(test_X) is not np.ndarray:     test_X  = np.asarray(test_X)
