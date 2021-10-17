@@ -36,7 +36,7 @@ def predict(test_X, train_X, train_Y, knn_k:int = 200, knn_t:float = 0.1, batchs
     if type(test_X) is not np.ndarray:     test_X  = np.asarray(test_X)
     if type(train_X) is not np.ndarray:    train_X = np.asarray(train_X)
     if type(train_Y) is not np.ndarray:    train_Y = np.asarray(train_Y)
-    assert train_Y.dtype in [np.int, np.int16, np.int32, np.int64]
+    assert "int" in str(train_Y.dtype)
     if len(train_X.shape) != len(test_X.shape):
         raise Exception(f"(rank(train_X) == {len(train_X.shape)}) != (rank(test_X) == {len(test_X.shape)})")
     if len(train_X.shape) > 2:
@@ -45,7 +45,7 @@ def predict(test_X, train_X, train_Y, knn_k:int = 200, knn_t:float = 0.1, batchs
     if len(test_X.shape) > 2:
         warnings.warn(f"rank(test_X) = {len(test_X.shape)} > 2 . we reshape test_X ", UserWarning)
         test_X = test_X.reshape(test_X.shape[0], -1)
-    test_X  /= np.linalg.norm(test_X, ord=2, axis=-1, keepdims=True)
-    train_X /= np.linalg.norm(train_X, ord=2, axis=-1, keepdims=True)
+    test_X  = test_X / np.linalg.norm(test_X, ord=2, axis=-1, keepdims=True)
+    train_X = train_X / np.linalg.norm(train_X, ord=2, axis=-1, keepdims=True)
     train_X = train_X.T
     return __predict(test_X, train_X, train_Y, knn_k, knn_t, batchsize = batchsize)
