@@ -36,7 +36,7 @@ def predict(test_X, train_X, train_Y, knn_k:int = 200, knn_t:float = 0.1, batchs
     if not torch.is_tensor(test_X):     test_X  = torch.tensor(test_X)
     if not torch.is_tensor(train_X):    train_X = torch.tensor(train_X)
     if not torch.is_tensor(train_Y):    train_Y = torch.tensor(train_Y)
-    assert train_Y.dtype in [torch.int, torch.int16, torch.int32, torch.int64]
+    assert "int" in str(train_Y.dtype)
     if len(train_X.shape) != len(test_X.shape):
         raise Exception(f"(rank(train_X) == {len(train_X.shape)}) != (rank(test_X) == {len(test_X.shape)})")
     if len(train_X.shape) > 2:
